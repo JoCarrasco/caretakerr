@@ -1,47 +1,28 @@
 import { useAuthStore } from '../stores/authStore';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './Dashboard.css';
 
 export default function Dashboard() {
-    const { user, clearAuth } = useAuthStore();
-    const navigate = useNavigate();
-
-    const handleLogout = () => {
-        clearAuth();
-        navigate('/login');
-    };
+    const { user } = useAuthStore();
 
     return (
         <div className="dashboard">
-            <nav className="dashboard-nav">
-                <div className="nav-brand">
-                    <h1>🏥 CareTaker</h1>
-                </div>
-                <div className="nav-user">
-                    <span className="user-info">
-                        <strong>{user?.name}</strong>
-                        <small>{user?.role}</small>
-                    </span>
-                    <button className="btn btn-logout" onClick={handleLogout}>
-                        Logout
-                    </button>
-                </div>
-            </nav>
-
             <main className="dashboard-main">
                 <div className="container">
                     <div className="welcome-section">
                         <h2>Welcome back, {user?.name}! 👋</h2>
-                        <p>Your CareTaker MVP is ready to go. Core features coming soon:</p>
+                        <p>Your CareTaker MVP is ready to go. Manage your elderly home operations below:</p>
                     </div>
 
                     <div className="features-grid">
-                        <div className="feature-card">
-                            <div className="feature-icon">📦</div>
-                            <h3>Inventory</h3>
-                            <p>Track medicines and supplies with low stock alerts</p>
-                            <span className="status-badge coming-soon">Coming Soon</span>
-                        </div>
+                        <Link to="/inventory" className="feature-card-link">
+                            <div className="feature-card">
+                                <div className="feature-icon">📦</div>
+                                <h3>Inventory</h3>
+                                <p>Track medicines and supplies with low stock alerts</p>
+                                <span className="status-badge active">Active</span>
+                            </div>
+                        </Link>
 
                         <div className="feature-card">
                             <div className="feature-icon">📅</div>

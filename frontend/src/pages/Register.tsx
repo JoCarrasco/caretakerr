@@ -1,5 +1,5 @@
-import { useState, FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../services/authService';
 import { useAuthStore } from '../stores/authStore';
 import './Auth.css';
@@ -12,27 +12,20 @@ export default function Register() {
     const [role, setRole] = useState<'admin' | 'caretaker'>('caretaker');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-
     const navigate = useNavigate();
-    const setAuth = useAuthStore((state) => state.setAuth);
+    const { setAuth } = useAuthStore();
 
-    const handleSubmit = async (e: FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
         setLoading(true);
 
         try {
-            const response = await authService.register({
-                name,
-                email,
-                password,
-                role,
-                phone: phone || undefined,
-            });
+            const response = await authService.register({ name, email, password, phone, role });
             setAuth(response.user, response.token);
             navigate('/dashboard');
         } catch (err: any) {
-            setError(err.response?.data?.error || 'Registration failed. Please try again.');
+            setError(err.response?.data?.error || 'Registration failed');
         } finally {
             setLoading(false);
         }
@@ -42,15 +35,14 @@ export default function Register() {
         <div className="auth-container">
             <div className="auth-card">
                 <div className="auth-header">
-                    <h1>🏥 CareTaker</h1>
-                    <p>Elderly Home Management System</p>
+                    <div className="auth-logo">🏥</div>
+                    <h1>Join CareTaker</h1>
+                    <p>Create your account to get started</p>
                 </div>
-
-                <h2>Create Account</h2>
 
                 {error && <div className="error-message">{error}</div>}
 
-                <form onSubmit={handleSubmit}>
+                <form className="auth-form" onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label className="form-label">Full Name</label>
                         <input
@@ -60,30 +52,18 @@ export default function Register() {
                             onChange={(e) => setName(e.target.value)}
                             required
                             placeholder="John Doe"
-                            autoFocus
                         />
                     </div>
 
                     <div className="form-group">
-                        <label className="form-label">Email</label>
+                        <label className="form-label">Email Address</label>
                         <input
                             type="email"
                             className="form-input"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
-                            placeholder="your@email.com"
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label className="form-label">Phone (Optional)</label>
-                        <input
-                            type="tel"
-                            className="form-input"
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
-                            placeholder="+1234567890"
+                            placeholder="john@example.com"
                         />
                     </div>
 
@@ -96,32 +76,62 @@ export default function Register() {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                             placeholder="••••••••"
-                            minLength={6}
                         />
-                        <small className="form-hint">Minimum 6 characters</small>
                     </div>
 
                     <div className="form-group">
-                        <label className="form-label">Role</label>
-                        <select
+                        <label className="form-label">Phone Number</label>
+                        <input
+                            type="tel"
                             className="form-input"
-                            value={role}
-                            onChange={(e) => setRole(e.target.value as 'admin' | 'caretaker')}
-                            required
-                        >
-                            <option value="caretaker">Caretaker</option>
-                            <option value="admin">Administrator</option>
-                        </select>
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                            placeholder="+1 (555) 000-0000"
+                        />
                     </div>
 
-                    <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
-                        {loading ? 'Creating Account...' : 'Register'}
+                    <div className="form-group">
+                        <label className="form-label">Select Your Role</label>
+                        <div className="role-selection">
+                            <div className="role-option">
+                                <input
+                                    type="radio"
+                                    id="role-admin"
+                                    name="role"
+                                    value="admin"
+                                    checked={role === 'admin'}
+                                    onChange={(e) => setRole(e.target.value as 'admin')}
+                                />
+                                <label htmlFor="role-admin">
+                                    <div className="role-icon">👨‍💼</div>
+                                    <div className="role-name">Administrator</div>
+                                </label>
+                            </div>
+                            <div className="role-option">
+                                <input
+                                    type="radio"
+                                    id="role-caretaker"
+                                    name="role"
+                                    value="caretaker"
+                                    checked={role === 'caretaker'}
+                                    onChange={(e) => setRole(e.target.value as 'caretaker')}
+                                />
+                                <label htmlFor="role-caretaker">
+                                    <div className="role-icon">👨‍⚕️</div>
+                                    <div className="role-name">Caretaker</div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" className="btn btn-primary" disabled={loading}>
+                        {loading ? 'Creating Account...' : 'Create Account'}
                     </button>
                 </form>
 
-                <p className="auth-footer">
-                    Already have an account? <Link to="/login">Login</Link>
-                </p>
+                <div className="auth-footer">
+                    <p>Already have an account? <Link to="/login">Sign in</Link></p>
+                </div>
             </div>
         </div>
     );

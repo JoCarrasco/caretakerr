@@ -1,0 +1,372 @@
+/* Modern Inventory Components */
+
+.inventory-list-container {
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    border: 1px solid var(--border-light);
+}
+
+.list-header {
+    padding: var(--spacing-xl);
+    border-bottom: 1px solid var(--border-light);
+    background: var(--bg-secondary);
+}
+
+.search-input {
+    max-width: 400px;
+    padding: 0.75rem 1rem 0.75rem 2.75rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 0.75rem center;
+    background-size: 1.25rem;
+    border: 2px solid var(--border);
+}
+
+.search-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-100);
+}
+
+/* Modern Table Design */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.inventory-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.inventory-table thead {
+    background: var(--gray-50);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.inventory-table th {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid var(--border);
+}
+
+.inventory-table td {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text);
+    font-size: 0.9375rem;
+}
+
+.inventory-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.inventory-table tbody tr:hover {
+    background: var(--primary-50);
+}
+
+.inventory-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Low Stock Row Highlighting */
+.row-low-stock {
+    background: var(--danger-light);
+    position: relative;
+}
+
+.row-low-stock::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--danger);
+}
+
+.row-low-stock:hover {
+    background: #fecaca !important;
+}
+
+/* Category Badges */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    border: 1px solid;
+}
+
+.badge-medicine {
+    background: #dbeafe;
+    color: #1e40af;
+    border-color: #3b82f6;
+}
+
+.badge-supply {
+    background: #f3e8ff;
+    color: #6b21a8;
+    border-color: #8b5cf6;
+}
+
+/* Status Labels */
+.status-label {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.875rem;
+    font-weight: 600;
+    gap: 0.5rem;
+}
+
+.status-label::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+}
+
+.status-success {
+    color: var(--success);
+}
+
+.status-success::before {
+    background-color: var(--success);
+}
+
+.status-danger {
+    color: var(--danger);
+}
+
+.status-danger::before {
+    background-color: var(--danger);
+}
+
+/* Action Buttons */
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: var(--radius);
+}
+
+.btn-outline {
+    background: white;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+}
+
+.btn-outline:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--primary-50);
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    background: white;
+    border-radius: var(--radius-xl);
+    width: 100%;
+    max-width: 540px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-xl);
+    animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid var(--border-light);
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    padding: var(--spacing-xl);
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-secondary);
+}
+
+.modal-header h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0;
+}
+
+.modal-body {
+    padding: var(--spacing-xl);
+}
+
+.modal-footer {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-md);
+    background: var(--bg-secondary);
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 1.75rem;
+    line-height: 1;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius);
+    transition: all 0.2s ease;
+}
+
+.btn-close:hover {
+    background: var(--gray-100);
+    color: var(--text);
+}
+
+/* Current Stock Info */
+.current-stock-info {
+    padding: var(--spacing-md);
+    background: var(--primary-50);
+    border-radius: var(--radius);
+    border-left: 4px solid var(--primary);
+}
+
+.current-stock-info p {
+    margin: 0;
+    color: var(--text);
+    font-size: 0.9375rem;
+}
+
+.current-stock-info strong {
+    color: var(--primary-dark);
+    font-weight: 700;
+}
+
+/* Radio Group */
+.radio-group {
+    display: flex;
+    gap: var(--spacing-lg);
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text);
+    padding: 0.625rem 1rem;
+    border-radius: var(--radius);
+    transition: background 0.2s ease;
+}
+
+.radio-group label:hover {
+    background: var(--gray-50);
+}
+
+.radio-group input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--primary);
+}
+
+/* Empty State */
+.text-center {
+    text-align: center;
+    padding: var(--spacing-2xl);
+    color: var(--text-muted);
+}
+
+/* Utility Classes */
+.mb-4 {
+    margin-bottom: var(--spacing-lg);
+}
+
+.flex {
+    display: flex;
+}
+
+.gap-4 {
+    gap: var(--spacing-lg);
+}
+
+.gap-2 {
+    gap: var(--spacing-sm);
+}
+
+.items-center {
+    align-items: center;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}

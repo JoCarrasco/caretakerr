@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
+import inventoryRoutes from './routes/inventory.js';
 import pool from './config/database.js';
 
 dotenv.config({ path: '../.env' });
@@ -15,9 +16,9 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 // Middleware
 app.use(helmet());
 app.use(cors({
-    origin: process.env.NODE_ENV === 'production'
+    origin: NODE_ENV === 'production'
         ? process.env.FRONTEND_URL
-        : 'http://localhost:5173',
+        : true, // In development, allow any origin (cors package interprets true as reflecting the origin)
     credentials: true
 }));
 app.use(morgan('dev'));
@@ -46,6 +47,7 @@ app.get('/health', async (req: Request, res: Response): Promise<void> => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/inventory', inventoryRoutes);
 
 // 404 handler
 app.use((req: Request, res: Response): void => {
