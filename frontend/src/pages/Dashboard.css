@@ -1,0 +1,123 @@
+.dashboard {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-nav {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.nav-brand h1 {
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+.nav-user {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.user-info strong {
+    color: var(--text);
+}
+
+.user-info small {
+    color: var(--text-secondary);
+    text-transform: capitalize;
+}
+
+.btn-logout {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+}
+
+.btn-logout:hover {
+    background: var(--light);
+    border-color: var(--text-secondary);
+}
+
+.dashboard-main {
+    flex: 1;
+    padding: 2rem;
+}
+
+.welcome-section {
+    margin-bottom: 2rem;
+}
+
+.welcome-section h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+}
+
+.welcome-section p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.feature-card {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+}
+
+.feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+}
+
+.feature-card p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.status-badge {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.status-badge.coming-soon {
+    background: #fef3c7;
+    color: #92400e;
+}
