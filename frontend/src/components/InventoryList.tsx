@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { inventoryService } from '../services/inventoryService';
+import { useEffect, useState } from 'react';
+import inventoryService from '../services/inventoryService';
 import { InventoryItem } from '../types';
 import './Inventory.css';
 

@@ -1,12 +1,68 @@
 import express, { Response } from 'express';
 import { body, validationResult } from 'express-validator';
+import multer from 'multer';
 import pool from '../config/database.js';
 import { authMiddleware, AuthRequest, requireAdmin } from '../middleware/auth.js';
+import { analyzeInventoryImage, validateGeminiConfig } from '../services/geminiVision.js';
 
 const router = express.Router();
 
+// Configure multer for image uploads (memory storage)
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 10 * 1024 * 1024, // 10MB max
+    },
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Only image files are allowed'));
+        }
+    },
+});
+
 // Apply auth middleware to all inventory routes
 router.use(authMiddleware);
+
+/**
+ * POST /api/inventory/analyze-image
+ * Analyze an uploaded image using AI to extract inventory item details
+ */
+router.post('/analyze-image', upload.single('image'), async (req: AuthRequest, res: Response) => {
+    try {
+        // Check if Gemini API is configured
+        if (!validateGeminiConfig()) {
+            return res.status(503).json({
+                error: 'AI service not configured',
+                message: 'Please set GEMINI_API_KEY in environment variables',
+            });
+        }
+
+        // Check if file was uploaded
+        if (!req.file) {
+            return res.status(400).json({ error: 'No image file provided' });
+        }
+
+        // Analyze the image
+        const extraction = await analyzeInventoryImage(req.file.buffer, req.file.mimetype);
+
+        return res.json({
+            success: true,
+            data: extraction,
+            message:
+                extraction.confidence >= 70
+                    ? 'Item details extracted successfully'
+                    : 'Low confidence extraction - please review and edit',
+        });
+    } catch (error: any) {
+        console.error('Image analysis error:', error);
+        return res.status(500).json({
+            error: 'Image analysis failed',
+            message: error.message || 'Unable to analyze image. Please try manual entry.',
+        });
+    }
+});
 
 /**
  * GET /api/inventory

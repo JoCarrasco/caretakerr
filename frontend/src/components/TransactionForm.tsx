@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { inventoryService, InventoryTransactionData } from '../services/inventoryService';
+import { useState } from 'react';
+import inventoryService from '../services/inventoryService';
 import { InventoryItem } from '../types';
 
 interface TransactionFormProps {
@@ -29,11 +29,7 @@ export default function TransactionForm({ item, onClose, onSuccess }: Transactio
 
         try {
             setLoading(true);
-            await inventoryService.recordTransaction(item.id, {
-                type,
-                quantity,
-                notes
-            });
+            await inventoryService.recordTransaction(item.id, type, quantity, notes || undefined);
             onSuccess();
         } catch (err: any) {
             setError(err.response?.data?.error || 'Failed to record transaction');

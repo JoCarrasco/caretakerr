@@ -1,44 +1,98 @@
 import api from './api';
 import { InventoryItem } from '../types';
 
-export interface InventoryTransactionData {
-    type: 'in' | 'out';
+export interface InventoryItemInput {
+    name: string;
+    category: 'medicine' | 'supply';
     quantity: number;
+    unit: string;
+    min_stock_level?: number;
+    expiry_date?: string;
+    location?: string;
     notes?: string;
 }
 
-export const inventoryService = {
-    async getAll(): Promise<InventoryItem[]> {
-        const response = await api.get<InventoryItem[]>('/inventory');
+export interface AIExtraction {
+    name: string | null;
+    category: 'medicine' | 'supply' | null;
+    quantity: number | null;
+    unit: string | null;
+    expiry_date: string | null;
+    manufacturer: string | null;
+    description: string | null;
+    warnings: string | null;
+    confidence: number;
+}
+
+export interface AnalyzeImageResponse {
+    success: boolean;
+    data: AIExtraction;
+    message: string;
+}
+
+const inventoryService = {
+    // Get all inventory items
+    getAll: async (): Promise<InventoryItem[]> => {
+        const response = await api.get('/inventory');
         return response.data;
     },
 
-    async getLowStock(): Promise<InventoryItem[]> {
-        const response = await api.get<InventoryItem[]>('/inventory/low-stock');
+    // Get low stock items
+    getLowStock: async (): Promise<InventoryItem[]> => {
+        const response = await api.get('/inventory/low-stock');
         return response.data;
     },
 
-    async getById(id: number): Promise<InventoryItem> {
-        const response = await api.get<InventoryItem>(`/inventory/${id}`);
+    // Get single item
+    getById: async (id: string): Promise<InventoryItem> => {
+        const response = await api.get(`/inventory/${id}`);
         return response.data;
     },
 
-    async create(data: Partial<InventoryItem>): Promise<InventoryItem> {
-        const response = await api.post<InventoryItem>('/inventory', data);
+    // Create new item
+    create: async (item: InventoryItemInput): Promise<InventoryItem> => {
+        const response = await api.post('/inventory', item);
         return response.data;
     },
 
-    async update(id: number, data: Partial<InventoryItem>): Promise<InventoryItem> {
-        const response = await api.patch<InventoryItem>(`/inventory/${id}`, data);
+    // Update item
+    update: async (id: string, updates: Partial<InventoryItemInput>): Promise<InventoryItem> => {
+        const response = await api.patch(`/inventory/${id}`, updates);
         return response.data;
     },
 
-    async delete(id: number): Promise<void> {
+    // Delete item
+    delete: async (id: string): Promise<void> => {
         await api.delete(`/inventory/${id}`);
     },
 
-    async recordTransaction(id: number, data: InventoryTransactionData): Promise<InventoryItem> {
-        const response = await api.post<InventoryItem>(`/inventory/${id}/transaction`, data);
+    // Record transaction
+    recordTransaction: async (
+        id: string,
+        type: 'in' | 'out',
+        quantity: number,
+        notes?: string
+    ): Promise<InventoryItem> => {
+        const response = await api.post(`/inventory/${id}/transaction`, {
+            type,
+            quantity,
+            notes,
+        });
+        return response.data;
+    },
+
+    // Analyze image with AI
+    analyzeImage: async (imageFile: File): Promise<AnalyzeImageResponse> => {
+        const formData = new FormData();
+        formData.append('image', imageFile);
+
+        const response = await api.post('/inventory/analyze-image', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
         return response.data;
     },
 };
+
+export default inventoryService;

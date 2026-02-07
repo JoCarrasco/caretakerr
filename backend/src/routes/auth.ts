@@ -32,8 +32,8 @@ const generateToken = (user: User): string => {
             role: user.role,
             organizationId: user.organization_id
         },
-        JWT_SECRET,
-        { expiresIn: JWT_EXPIRES_IN }
+        JWT_SECRET as string,
+        { expiresIn: JWT_EXPIRES_IN as any }
     );
 };
 
@@ -47,8 +47,11 @@ router.post('/register',
     ],
     async (req: Request, res: Response): Promise<void> => {
         try {
+            console.log('📝 Registration attempt:', { email: req.body.email, role: req.body.role });
+
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
+                console.log('❌ Validation errors:', errors.array());
                 res.status(400).json({ errors: errors.array() });
                 return;
             }
@@ -62,12 +65,14 @@ router.post('/register',
             );
 
             if (existingUser.rows.length > 0) {
+                console.log('❌ User already exists:', email);
                 res.status(400).json({ error: 'User already exists' });
                 return;
             }
 
             // Get or create organization (for self-hosted, there's only one)
             const isSelfHosted = process.env.SELF_HOSTED === 'true';
+            console.log('🏢 Self-hosted mode:', isSelfHosted);
             let organizationId: number;
 
             if (isSelfHosted) {
@@ -81,14 +86,17 @@ router.post('/register',
 
                 if (orgResult.rows.length > 0) {
                     organizationId = orgResult.rows[0].id;
+                    console.log('✅ Created new organization:', organizationId);
                 } else {
                     const existingOrg = await pool.query('SELECT id FROM organizations LIMIT 1');
                     organizationId = existingOrg.rows[0].id;
+                    console.log('✅ Using existing organization:', organizationId);
                 }
             } else {
                 // For multi-tenant, organization should be provided
                 organizationId = req.body.organizationId;
                 if (!organizationId) {
+                    console.log('❌ Organization ID required for multi-tenant');
                     res.status(400).json({ error: 'Organization ID required' });
                     return;
                 }
@@ -108,6 +116,8 @@ router.post('/register',
             const user = result.rows[0];
             const token = generateToken(user);
 
+            console.log('✅ User registered successfully:', { id: user.id, email: user.email, role: user.role });
+
             res.status(201).json({
                 token,
                 user: {
@@ -119,8 +129,9 @@ router.post('/register',
                     organizationId: user.organization_id
                 }
             });
-        } catch (error) {
-            console.error('Registration error:', error);
+        } catch (error: any) {
+            console.error('❌ Registration error:', error.message);
+            console.error('Stack trace:', error.stack);
             res.status(500).json({ error: 'Server error during registration' });
         }
     }
