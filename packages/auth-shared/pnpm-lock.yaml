@@ -1,0 +1,30 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    devDependencies:
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+
+  ../..: {}
+
+  ../../apps/api: {}
+
+  ../api: {}
+
+  ../auth-client: {}
+
+  ../eslint-config: {}
+
+  ../jest-config: {}
+
+  ../typescript-config: {}
